@@ -42,9 +42,7 @@ public class Pelicula implements Comparable<Pelicula> {
     private float reviews_from_users;
     private String reviews_from_critics;
     
-     public float getRating() {
-        return avg_vote;
-    }
+   
     
     public static Pelicula[] LeerCSV() throws ParseException{
         List<Pelicula> listaP = new ArrayList<Pelicula>();
@@ -87,25 +85,19 @@ public class Pelicula implements Comparable<Pelicula> {
                 p.reviews_from_users = parseFloat(fields[20]);
                 p.reviews_from_critics = (fields.length>21) ? fields[21] : null;
                 listaP.add(p); //añadimos a la lista
-                Pelicula[] vectorP = new Pelicula[listaP.size()]; //llenamos el vector 
-                for(int i = 0; i < listaP.size(); i++){
-                    
-                    vectorP[i] = listaP.get(i);
-                }
-                return vectorP;
             }
             catch(NumberFormatException e) {
                 StdOut.println("ERROR: Linea "+counter);
                 StdOut.println(line);
                 StdOut.println();
+                return null;
             }
         }
-        StdOut.println("Total lines parsed: "+counter);
-        
-        StdOut.println("pelicula[0] < pelicula[1] ? " + p.get(0).compareTo(p.get(1)));
-        
-        
-
+        Pelicula[] vectorP = new Pelicula[listaP.size()]; //llenamos el vector 
+        for(int i = 0; i < listaP.size(); i++){
+            vectorP[i] = listaP.get(i);
+        }
+        return vectorP;
     }
     private static float parseFloat(String s) {
         try {
@@ -134,20 +126,31 @@ public class Pelicula implements Comparable<Pelicula> {
     
     public void ListarPorRating(List<Pelicula> listaP){
         Pelicula[] p = listaP.toArray(new Pelicula[] {});
-        Comparator<Pelicula> compRating = (p1, p2) -> { return  Float.compare(p2.getRating(), p1.getRating()); };
+        Comparator<Pelicula> compRating = (p1, p2) -> { return  Float.compare(p2.avg_vote, p1.avg_vote); };
         Insertion.sort(p, compRating);
         for(Pelicula x: p) StdOut.println(x);
     }
     @Override
     public String toString(){
-        
-        return ;
+        return null;
+    }
+    
+    public void ListarPorComparador(Pelicula vec[], Comparator c){
+        Insertion.sort(vec, c);
+        for(Pelicula x: vec) StdOut.println(x);
+    }
+    
+    static public class ComparadorPeliculas{
+        Comparator<Pelicula> compTitulo = (p1, p2) -> { return  p1.title.compareTo(p2.title); };
+        Comparator<Pelicula> compFechaPub = (p1, p2) -> { return (p1.date_published.compareTo(p2.date_published)); };
+    }
+    
+    public void MedirTiempoAlg(){
         
     }
     
-    static public class ComparadorPeliculas(){
     
-    }
+    
     
 }
 
