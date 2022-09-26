@@ -10,8 +10,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Insertion;
+import edu.princeton.cs.algs4.MergeX;
+import edu.princeton.cs.algs4.Selection;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.Stopwatch;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 /**
@@ -44,19 +49,19 @@ public class Pelicula implements Comparable<Pelicula> {
     
    
     
-    public static Pelicula[] LeerCSV() throws ParseException{
+    public static Pelicula[] LeerCSV(String ruta) throws ParseException{
+        
         List<Pelicula> listaP = new ArrayList<Pelicula>();
-        String url = "IMDb%20movies.csv";
-        In in = new In(url);
+        In in = new In(ruta);
         in.readLine(); // ignore first line
         int counter = 0;
         while (!in.isEmpty()) {
             counter++;
             String line = in.readLine();
             // StdOut.println(line);
-
-            String[] fields = null;
             try {
+            String[] fields = null;
+            
                 // Solucion para no separar el campo de actores encerrado en comillas:
                 // Tomada de: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
                 fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
@@ -128,25 +133,75 @@ public class Pelicula implements Comparable<Pelicula> {
         Pelicula[] p = listaP.toArray(new Pelicula[] {});
         Comparator<Pelicula> compRating = (p1, p2) -> { return  Float.compare(p2.avg_vote, p1.avg_vote); };
         Insertion.sort(p, compRating);
-        for(Pelicula x: p) StdOut.println(x);
+        for(Pelicula x: p) StdOut.println(x.toString());
     }
     @Override
     public String toString(){
-        return null;
+        String cadena = "";
+        cadena = "imdb_title_id: " + this.imdb_title_id + 
+                "\ntitle: " + this.title + 
+                "\noriginal_title: " + this.original_title +
+                "\nyear: " + this.year + 
+                "\ndate_published: " + this.date_published + 
+                "\ngenre: " + this.genre + 
+                "\nduration: " + this.duration + 
+                "\ncountry: " +  this.country +
+                "\nlanguage: " + this.language + 
+                "\ndirector: " + this.director + 
+                "\nwriter: " + this.writer + 
+                "\nproduction_company: " + this.production_company +
+                "\nactors: " +  this.actors +
+                "\ndescription: " + this.description + 
+                "\navg_vote: " + this.avg_vote + 
+                "\nvotes: " + this.votes + 
+                "\nbudget: " + this.budget + 
+                "\nusa_gross_income: " + this.usa_gross_income + 
+                "\nworlwide_gross_income: " + this.worlwide_gross_income + 
+                "\nmetascore: " + this.metascore + 
+                "\nreviews_from_users: " + this.reviews_from_users + 
+                "\nreviews_from_critics: " + this.reviews_from_critics;
+                        
+        return cadena;
     }
     
-    public void ListarPorComparador(Pelicula vec[], Comparator c){
+    public void ListarPorComparador(Pelicula vec[], Comparator<Pelicula> c){
         Insertion.sort(vec, c);
-        for(Pelicula x: vec) StdOut.println(x);
+        for(Pelicula x: vec) StdOut.println(x.toString());
     }
     
-    static public class ComparadorPeliculas{
-        Comparator<Pelicula> compTitulo = (p1, p2) -> { return  p1.title.compareTo(p2.title); };
-        Comparator<Pelicula> compFechaPub = (p1, p2) -> { return (p1.date_published.compareTo(p2.date_published)); };
-    }
-    
-    public void MedirTiempoAlg(){
+    public static class ComparadorPeliculas{
+        static Comparator<Pelicula> compTitulo = (p1, p2) -> { return  p1.title.compareTo(p2.title); };
+        static Comparator<Pelicula> compFechaPub = (p1, p2) -> { return (p1.date_published.compareTo(p2.date_published)); };
         
+        public Comparator<Pelicula> getComp(){
+            return compTitulo;
+        }
+        
+    }
+    
+    public static double MedirTiempoInsertion(Pelicula vec[], Comparator c ){
+        double t1 = 0;
+        StdRandom.shuffle(vec);
+
+        Stopwatch s1 = new Stopwatch();
+        Insertion.sort(vec,c);
+        return t1 = s1.elapsedTime();
+    }
+    
+    public static double MedirTiempoMergeX(Pelicula vec[], Comparator c ){
+        double t2 = 0;
+        StdRandom.shuffle(vec);
+        Stopwatch s2 = new Stopwatch();
+        MergeX.sort(vec, c);
+        return t2 = s2.elapsedTime();
+    }
+    
+    public static double MedirTiempoArrays(Pelicula vec[], Comparator c ){
+        double t3 = 0;
+        StdRandom.shuffle(vec);
+        Stopwatch s3 = new Stopwatch();
+        Arrays.sort(vec, c);
+        return t3 = s3.elapsedTime();
     }
     
     
